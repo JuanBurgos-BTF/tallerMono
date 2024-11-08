@@ -28,15 +28,8 @@
         <br>
         <br>
 
-        <label for="dia">Seleccione un día:</label>
-        <select id="dia" name="dia">
-            <option value="lunes">Lunes</option>
-            <option value="martes">Martes</option>
-            <option value="miercoles">Miércoles</option>
-            <option value="jueves">Jueves</option>
-            <option value="viernes">Viernes</option>
-            <option value="sabado">Sábado</option>
-        </select>
+        <label>Ingrese una fecha</label>
+        <input id="fecha" name="fecha" type="date" placeholder="Ingrese fecha" required>
 
         <br>
         <br>
