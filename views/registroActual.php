@@ -35,13 +35,15 @@
                 echo '<td>' . $dato['horaSalida'] . '</td>';
                 echo '<td>' . $dato['idResponsable'] . '</td>';
                 echo '<td>' . $dato['idSala'] . '</td>';
+                echo '<td><a href="index.php?c=registros&a=ControllerModificarRegistro&codigo=' . $dato['codigoEstudiante'] . '&nombre=' . $dato['nombreEstudiante'] . '">Modificar</a></td>';
                 echo '</tr>';
             }
-
             ?>
         </tbody>
     </table>
     <button><a href="index.php?c=registros&a=index">Volver</a></button>
 </body>
+
+<link rel="stylesheet" href="assets/estilos.css">
 
 </html>

@@ -60,7 +60,7 @@ class RegistrosModel
         return $this->registros;
     }
 
-    public function CambioSalida($codigoSalida,)
+    public function CambioSalida($codigoSalida)
     {
         $resultado = $this->db->query("UPDATE ingresos SET horaSalida = NOW() WHERE codigoEstudiante = '$codigoSalida'");
     }
@@ -73,5 +73,10 @@ class RegistrosModel
     public function insertarRegistroSala($fecha, $materia, $horaInicio, $horaSalida, $programa, $sala)
     {
         $resultado = $this->db->query("INSERT INTO horarios_salas(dia, materia, horaInicio, horaFin, idPrograma, idSala)values('$fecha', '$materia','$horaInicio', '$horaSalida', '$programa', '$sala') ");
+    }
+
+    public function modificarUsuario($codigoNuevo, $nombreNuevo, $codigoViejo)
+    {
+        $resultado = $this->db->query("UPDATE ingresos SET codigoEstudiante = '$codigoNuevo', nombreEstudiante = '$nombreNuevo' WHERE codigoEstudiante = '$codigoViejo'");
     }
 }

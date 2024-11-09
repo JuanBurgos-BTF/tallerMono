@@ -7,34 +7,48 @@
     <title>Registro UDB</title>
 </head>
 
-<body>
+<body class="cuadro">
     <div>
-        <button> <a href="index.php?c=registros&a=ControllerIngreso">Registrar ingreso (Estudiante)</a></button>
+        <button class="btnPrincipal"> <a href="index.php?c=registros&a=ControllerIngreso">Registrar ingreso (Estudiante)</a></button>
     </div>
 
-    <div>
-        <button><a href="index.php?c=registros&a=ControllerSalidas">Registrar salida (Estudiante)</a></button>
-    </div>
+    <br>
 
     <div>
-        <button><a href="index.php?c=registros&a=ControllerGetProgramas">Ver programas</a></button>
+        <button class="btnPrincipal"><a href="index.php?c=registros&a=ControllerSalidas">Registrar salida (Estudiante)</a></button>
     </div>
 
-    <div>
-        <button><a href="index.php?c=registros&a=ControllerGetResponsables">Ver responsables</a></button>
-    </div>
+    <br>
 
     <div>
-        <button><a href="index.php?c=registros&a=ControllerGetSalas">Ver salas</a></button>
+        <button class="btnPrincipal"><a href="index.php?c=registros&a=ControllerGetProgramas">Ver programas</a></button>
     </div>
 
-    <div>
-        <button><a href="index.php?c=registros&a=ControllerRegistrosSalas">Registrar clase (Docente)</a></button>
-    </div>
+    <br>
 
     <div>
-        <button><a href="index.php?c=registros&a=ControllerGetRegistros">Ver registros y salidas</a></button>
+        <button class="btnPrincipal"><a href="index.php?c=registros&a=ControllerGetResponsables">Ver responsables</a></button>
+    </div>
+
+    <br>
+
+    <div>
+        <button class="btnPrincipal"><a href="index.php?c=registros&a=ControllerGetSalas">Ver salas</a></button>
+    </div>
+
+    <br>
+
+    <div>
+        <button class="btnPrincipal"><a href="index.php?c=registros&a=ControllerRegistrosSalas">Registrar clase (Docente)</a></button>
+    </div>
+
+    <br>
+
+    <div>
+        <button class="btnPrincipal"><a href="index.php?c=registros&a=ControllerGetRegistros">Ver registros y salidas</a></button>
     </div>
 </body>
+
+<link rel="stylesheet" href="assets/estilos.css">
 
 </html>

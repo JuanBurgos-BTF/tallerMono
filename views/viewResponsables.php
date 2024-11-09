@@ -30,4 +30,6 @@
     <button><a href="index.php?c=registros&a=index">Volver</a></button>
 </body>
 
+<link rel="stylesheet" href="assets/estilos.css">
+
 </html>

@@ -11,7 +11,7 @@
     <div class="error-message">
         <p><?php echo $errorMessage ?></p>
     </div>
-    <div><a href="index.php?c=registros&a=index"><button>Volver</button></a></div>
+    <div><a href="index.php?c=registros&a=index"><button class="btnError">Volver</button></a></div>
 </body>
-
+<link rel="stylesheet" href="assets/estilos.css">
 </html>

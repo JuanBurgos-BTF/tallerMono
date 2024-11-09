@@ -12,20 +12,57 @@ class RegistrosController
         require_once "models/registrosModel.php";
     }
 
+    public function ControllerModificarRegistro()
+    {
+        $codigo = $_GET['codigo'];
+        $controller = new RegistrosModel();
+        $data['registro'] = $controller->getRegistros();
+
+        foreach ($data['registro'] as $dato) {
+            if ($codigo == $dato['codigoEstudiante']) {
+                require_once "views/formModificar.php";
+            }
+        }
+    }
+
+    public function ControllerModificar()
+    {
+        $codigoViejo = $_POST['codigoViejo'];
+        $nuevoCodigo = $_POST['codigoNuevo'];
+        $nuevoNombre = $_POST['nombreNuevo'];
+
+        $controller = new RegistrosModel();
+        $data['registro'] = $controller->modificarUsuario($nuevoCodigo, $nuevoNombre, $codigoViejo);
+        $this->index();
+    }
+
     public function ControllerValidarCodigoSalida()
     {
         $controlador = new RegistrosModel();
         $data['registros'] = $controlador->getRegistros();
         $codigoSalida = $_POST['codigoSalida'];
+        $salida = $_POST['horaSalida'];
+        $codigoEncontrado = false;
 
         foreach ($data['registros'] as $dato) {
             if ($codigoSalida == $dato['codigoEstudiante']) {
-                $controlador->CambioSalida($codigoSalida);
-                $this->index();
-            } else {
-                $errorMessage = "El código ingresado no existe en los registros";
-                require_once "views/errorView.php";
+                $codigoEncontrado = true;
+                if ($dato['horaSalida'] == '00:00:00') {
+
+                    $controlador->CambioSalida($codigoSalida);
+                    $this->index();
+                    return;
+                } else {
+                    $errorMessage = "Ya se registró una salida con ese usuario a las ";
+                    require_once "views/errorView.php";
+                    return;
+                }
             }
+        }
+
+        if (!$codigoEncontrado) {
+            $errorMessage = "El código ingresado no existe en los registros.";
+            require_once "views/errorView.php";
         }
     }
 
@@ -38,6 +75,7 @@ class RegistrosController
 
     public function ControllerSalidas()
     {
+
         require_once "views/formSalida.php";
     }
 
@@ -135,7 +173,7 @@ class RegistrosController
         $codigo = $_POST['codigo'];
         $nombre = $_POST['nombre'];
         $programa = $_POST['programa'];
-        $dia = $_POST['dia'];
+        $fecha = $_POST['fecha'];
         $hora = $_POST['hora'];
         $sala = $_POST['sala'];
         $responsable = $_POST['responsable'];
@@ -143,14 +181,19 @@ class RegistrosController
         if ($this->ControllerValidarCodigo($codigo)) {
             if ($this->ControllerValidarProgramas($programa)) {
                 $idPrograma = $this->ControllerObtenerIdPrograma($programa);
-                if ($this->ControllerValidarFechas($dia, $hora)) {
+                if ($this->ControllerValidarFechas($fecha, $hora)) {
                     if ($this->ControllerValidarSalas($sala)) {
                         $idSala = $this->ControllerObtenerIdSala($sala);
                         if ($this->ControllerValidarResponsables($responsable)) {
-                            $idResponsable = $this->ControllerObtenerIdResponsable($responsable);
-                            $controlador = new RegistrosModel();
-                            $controlador->insertarRegistro($codigo, $nombre, $idPrograma, $dia, $hora, $idSala, $idResponsable);
-                            $this->index();
+                            if ($this->ControllerValidarRegistro($idSala, $hora, $fecha)) {
+                                $idResponsable = $this->ControllerObtenerIdResponsable($responsable);
+                                $controlador = new RegistrosModel();
+                                $controlador->insertarRegistro($codigo, $nombre, $idPrograma, $fecha, $hora, $idSala, $idResponsable);
+                                $this->index();
+                            } else {
+                                $errorMessage = "ERROR: La sala ya esta apartada para una clase en ese horario";
+                                require_once "views/errorView.php";
+                            }
                         } else {
                             $errorMessage = "ERROR: El responsable ingresado no existe";
                             require_once "views/errorView.php";
@@ -265,12 +308,42 @@ class RegistrosController
         }
         return $resultado;
     }
+    public function ControllerValidarRegistro($sala, $horaInicio, $dia)
+    {
+        $controller = new RegistrosModel();
+        $data['registros'] = $controller->getRegistrosSalas();
+
+        $horaInicioNueva = new DateTime($horaInicio);
+
+        if (!($dia instanceof DateTime)) {
+            $dia = new DateTime($dia);
+        }
+
+        $diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        $diaSemana = $diasSemana[$dia->format('w')];
+
+        foreach ($data['registros'] as $dato) {
+            $horaInicioExistente = new DateTime($dato['horaInicio']);
+            $horaFinExistente = new DateTime($dato['horaFin']);
+            $horaInicioNueva = new DateTime($horaInicio);
+            if (
+                $dato['dia'] == $diaSemana &&
+                $dato['idSala'] == $sala &&
+                ($horaInicioNueva >= $horaInicioExistente && $horaInicioNueva < $horaFinExistente)
+            ) {
+                $errorMessage = "La sala ya está apartada para esa fecha en ese horario";
+                require_once "views/errorView.php";
+                return false;
+            }
+        }
+        return true;
+    }
 
     public function ControllerObtenerRegistrosSalas($idSala, $horaInicio, $horaSalida, $dia)
     {
         $registro = new RegistrosModel();
         $data['registros'] = $registro->getRegistrosSalas();
-    
+
         if ($this->ControllerValidarFechaRegistroSalas($dia, $horaInicio)) {
             foreach ($data['registros'] as $dato) {
                 if ($dato['dia'] == $dia && $dato['idSala'] == $idSala) {
@@ -278,21 +351,21 @@ class RegistrosController
                     $horaFinExistente = new DateTime($dato['horaFin']);
                     $horaInicioNueva = new DateTime($horaInicio);
                     $horaFinNueva = new DateTime($horaSalida);
-    
+
                     if (($horaInicioNueva < $horaFinExistente) && ($horaFinNueva > $horaInicioExistente)) {
                         $errorMessage = "La sala ya está apartada para esa fecha en ese horario";
                         require_once "views/errorView.php";
-                        return false; 
+                        return false;
                     }
                 }
             }
         } else {
             $errorMessage = "ERROR: Solo hay fechas de Lunes a viernes de 7am a 8:50pm y Sabados de 7:00am a 4:30pm";
             require_once "views/errorView.php";
-            return false; 
+            return false;
         }
-    
-        return true; 
+
+        return true;
     }
 
     public function ControllerValidarFechas($fecha, $hora)

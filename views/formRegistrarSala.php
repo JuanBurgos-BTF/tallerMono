@@ -58,4 +58,6 @@
 
 </body>
 
+<link rel="stylesheet" href="assets/estilos.css">
+
 </html>
