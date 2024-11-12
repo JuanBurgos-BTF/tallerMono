@@ -53,7 +53,7 @@ class RegistrosController
                     $this->index();
                     return;
                 } else {
-                    $errorMessage = "Ya se registró una salida con ese usuario a las ";
+                    $errorMessage = "ERROR: Ya se registró una salida con ese usuario";
                     require_once "views/errorView.php";
                     return;
                 }
@@ -61,12 +61,10 @@ class RegistrosController
         }
 
         if (!$codigoEncontrado) {
-            $errorMessage = "El código ingresado no existe en los registros.";
+            $errorMessage = "ERROR: El código ingresado no existe en los registros.";
             require_once "views/errorView.php";
         }
     }
-
-    //Pagina principal
 
     public function index()
     {
@@ -120,8 +118,6 @@ class RegistrosController
         }
     }
 
-    //Obtener todas las salas de la base de datos
-
     public function ControllerGetSalas()
     {
         $registro = new RegistrosModel();
@@ -130,8 +126,6 @@ class RegistrosController
         require_once "views/viewSalas.php";
     }
 
-    //Obtener todos los programas de la base de datos
-
     public function ControllerGetProgramas()
     {
         $registro = new RegistrosModel();
@@ -139,7 +133,6 @@ class RegistrosController
 
         require_once "views/viewProgramas.php";
     }
-    //Obtener todos los responsables de la base de datos
 
     public function ControllerGetResponsables()
     {
@@ -149,8 +142,6 @@ class RegistrosController
         require_once "views/viewResponsables.php";
     }
 
-    //Obtener todos los registros de la base de datos
-
     public function ControllerGetRegistros()
     {
         $registro = new RegistrosModel();
@@ -159,14 +150,10 @@ class RegistrosController
         require_once "views/registroActual.php";
     }
 
-    //Acceso al formulario de ingreso
-
     public function ControllerIngreso()
     {
         require_once "views/formIngreso.php";
     }
-
-    //Guardar nuevo ingreso
 
     public function ControllerGuardar()
     {
@@ -211,12 +198,10 @@ class RegistrosController
                 require_once "views/errorView.php";
             }
         } else {
-            $errorMessage = "El codigo en los registros ya existe";
+            $errorMessage = "ERROR: El codigo en los registros ya existe";
             require_once "views/errorView.php";
         }
     }
-
-    /*Validaciones de existencia de variables*/
 
     public function ControllerValidarSalas($sala)
     {
@@ -331,7 +316,7 @@ class RegistrosController
                 $dato['idSala'] == $sala &&
                 ($horaInicioNueva >= $horaInicioExistente && $horaInicioNueva < $horaFinExistente)
             ) {
-                $errorMessage = "La sala ya está apartada para esa fecha en ese horario";
+                $errorMessage = "ERROR: La sala ya está apartada para esa fecha en ese horario";
                 require_once "views/errorView.php";
                 return false;
             }
@@ -353,7 +338,7 @@ class RegistrosController
                     $horaFinNueva = new DateTime($horaSalida);
 
                     if (($horaInicioNueva < $horaFinExistente) && ($horaFinNueva > $horaInicioExistente)) {
-                        $errorMessage = "La sala ya está apartada para esa fecha en ese horario";
+                        $errorMessage = "ERROR: La sala ya está apartada para esa fecha en ese horario";
                         require_once "views/errorView.php";
                         return false;
                     }
@@ -375,7 +360,7 @@ class RegistrosController
 
         $horaIngresada = new DateTime($hora);
 
-        if ($diaSemana <= 5) { // de lunes a viernes
+        if ($diaSemana <= 5) {
             $horaInicio = new DateTime('7:00');
             $horaFin = new DateTime('20:50');
 
@@ -383,7 +368,7 @@ class RegistrosController
                 return false;
             }
             return true;
-        } elseif ($diaSemana == 6) { // sábado
+        } elseif ($diaSemana == 6) {
             $horaInicio = new DateTime('7:00');
             $horaFin = new DateTime('16:30');
 
